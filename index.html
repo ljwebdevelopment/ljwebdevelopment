@@ -11,7 +11,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="assets/css/style.css" />
+  <!-- UPDATED: flattened paths (no assets folder) -->
+  <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
@@ -36,6 +37,11 @@
       <button class="navLink" type="button" data-action="scroll" data-target="portfolio">Portfolio</button>
       <button class="navLink" type="button" data-action="scroll" data-target="local">Local</button>
       <button class="btn btnSoft" type="button" data-action="scroll" data-target="contact">Get a Quote</button>
+
+      <!-- NEW: user login button (top-right area in header/nav) -->
+      <button class="btn btnOutline loginBtn" type="button" data-action="open-login" aria-label="User login">
+        User Login
+      </button>
     </nav>
   </div>
 </header>
@@ -103,6 +109,44 @@
     </div>
   </section>
 
+  <!-- DASHBOARD (NEW) -->
+  <section id="dashboard" class="section dashboard" hidden>
+    <div class="container">
+      <div class="kicker">Dashboard</div>
+      <h2>Your website overview</h2>
+      <p class="sectionLead">
+        This is a simple overview area. After login, we’ll show plan, last update, and quick actions.
+      </p>
+
+      <div class="grid3">
+        <div class="card pad">
+          <h3>Plan</h3>
+          <p class="small"><span id="dashPlan">—</span></p>
+        </div>
+
+        <div class="card pad">
+          <h3>Last update</h3>
+          <p class="small"><span id="dashLastUpdate">—</span></p>
+        </div>
+
+        <div class="card pad">
+          <h3>Quick actions</h3>
+          <div class="row">
+            <button class="btn btnOutline" type="button" data-action="scroll" data-target="contact">Request change</button>
+            <button class="btn btnSoft" type="button" data-action="logout">Log out</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card pad" style="margin-top:14px;">
+        <h3>Notes</h3>
+        <p class="small" id="dashNotes">
+          After we build script.js, this can be personalized per client (support plan, notes, links).
+        </p>
+      </div>
+    </div>
+  </section>
+
   <!-- SERVICES -->
   <section id="services" class="section softBand">
     <div class="container">
@@ -137,15 +181,20 @@
     </div>
   </section>
 
-  <!-- PRICING -->
+  <!-- PRICING (UPDATED: STACKED) -->
   <section id="pricing" class="section">
     <div class="container">
       <div class="kicker">Pricing</div>
       <h2>Clear pricing</h2>
       <p class="sectionLead">One-time build + a support plan so updates stay handled.</p>
 
-      <div class="split">
-        <div class="card pad">
+      <!-- UPDATED: stacked layout wrapper -->
+      <div class="pricingStack">
+
+        <!-- TOP: Standard build (popular) -->
+        <div class="card pad pricingBuild popularCard">
+          <div class="cornerTag" aria-label="Popular">Popular</div>
+
           <div class="priceTop">
             <div>
               <h3>Standard Website Build</h3>
@@ -171,65 +220,72 @@
           <p class="small">After launch, changes and updates are handled through a support plan.</p>
         </div>
 
-        <!-- SUPPORT PLANS (single section: cards + explained bullets under each) -->
-        <div class="card pad">
-          <h3>Support Plans</h3>
-          <p class="small">Choose a plan — it opens an email that’s already written.</p>
-
-          <div class="miniCard">
-            <div class="priceTop">
-              <div><strong>Basic</strong><div class="small">Minor updates</div></div>
-              <div class="price">$45 <small>/mo</small></div>
-            </div>
-
-            <ul class="list" style="margin-top:12px;">
-              <li>Text edits (hours, pricing, service descriptions)</li>
-              <li>Link fixes (call/email/maps buttons)</li>
-              <li>Swap or update existing images</li>
-              <li>Small layout adjustments to keep things clean</li>
-              <li>Basic troubleshooting if something looks off</li>
-            </ul>
-
-            <div class="row">
-              <button class="btn btnSoft" type="button" data-action="plan" data-plan="Basic Support ($30/mo)">Choose Basic</button>
+        <!-- BOTTOM: Support plans -->
+        <div class="card pad pricingPlans">
+          <div class="plansHead">
+            <div>
+              <h3>Support Plans</h3>
+              <p class="small">Choose a plan — it opens an email that’s already written.</p>
             </div>
           </div>
 
-          <div class="miniCard">
-            <div class="priceTop">
-              <div><strong>Standard</strong><div class="small">Regular promos</div></div>
-              <div class="price">$75 <small>/mo</small></div>
+          <!-- UPDATED: plans grid -->
+          <div class="plansGrid">
+            <div class="miniCard">
+              <div class="priceTop">
+                <div><strong>Basic</strong><div class="small">Minor updates</div></div>
+                <div class="price">$45 <small>/mo</small></div>
+              </div>
+
+              <ul class="list">
+                <li>Text edits (hours, pricing, service descriptions)</li>
+                <li>Link fixes (call/email/maps buttons)</li>
+                <li>Swap or update existing images</li>
+                <li>Small layout adjustments to keep things clean</li>
+                <li>Basic troubleshooting if something looks off</li>
+              </ul>
+
+              <div class="row">
+                <button class="btn btnSoft" type="button" data-action="plan" data-plan="Basic Support ($45/mo)">Choose Basic</button>
+              </div>
             </div>
 
-            <ul class="list" style="margin-top:12px;">
-              <li>Everything in Basic</li>
-              <li>Promo updates (specials, announcements, seasonal banners)</li>
-              <li>Add or refine sections on existing pages</li>
-              <li>FAQ accordion section (JavaScript) if needed</li>
-              <li>Basic SEO refresh (titles/meta descriptions, headings)</li>
-            </ul>
+            <div class="miniCard">
+              <div class="priceTop">
+                <div><strong>Standard</strong><div class="small">Regular promos</div></div>
+                <div class="price">$75 <small>/mo</small></div>
+              </div>
 
-            <div class="row">
-              <button class="btn btnSoft" type="button" data-action="plan" data-plan="Standard Support ($65/mo)">Choose Standard</button>
+              <ul class="list">
+                <li>Everything in Basic</li>
+                <li>Promo updates (specials, announcements, seasonal banners)</li>
+                <li>Add or refine sections on existing pages</li>
+                <li>FAQ accordion section (JavaScript) if needed</li>
+                <li>Basic SEO refresh (titles/meta descriptions, headings)</li>
+              </ul>
+
+              <div class="row">
+                <button class="btn btnSoft" type="button" data-action="plan" data-plan="Standard Support ($75/mo)">Choose Standard</button>
+              </div>
             </div>
-          </div>
 
-          <div class="miniCard">
-            <div class="priceTop">
-              <div><strong>Full Service</strong><div class="small">Hands-off</div></div>
-              <div class="price">$145 <small>/mo</small></div>
-            </div>
+            <div class="miniCard">
+              <div class="priceTop">
+                <div><strong>Full Service</strong><div class="small">Hands-off</div></div>
+                <div class="price">$145 <small>/mo</small></div>
+              </div>
 
-            <ul class="list" style="margin-top:12px;">
-              <li>Everything in Standard</li>
-              <li>Priority updates and faster turnaround</li>
-              <li>Gallery section (photo grid) if you need one</li>
-              <li>Testimonials / reviews section setup and updates</li>
-              <li>Speed + mobile polish pass when needed</li>
-            </ul>
+              <ul class="list">
+                <li>Everything in Standard</li>
+                <li>Priority updates and faster turnaround</li>
+                <li>Gallery section (photo grid) if you need one</li>
+                <li>Testimonials / reviews section setup and updates</li>
+                <li>Speed + mobile polish pass when needed</li>
+              </ul>
 
-            <div class="row">
-              <button class="btn btnSoft" type="button" data-action="plan" data-plan="Full Service Support ($125/mo)">Choose Full Service</button>
+              <div class="row">
+                <button class="btn btnSoft" type="button" data-action="plan" data-plan="Full Service Support ($145/mo)">Choose Full Service</button>
+              </div>
             </div>
           </div>
 
@@ -237,6 +293,7 @@
             Note: Support plans cover site edits and improvements using HTML/CSS/JavaScript. New pages beyond the build limit, major redesigns, or one-off campaigns may be quoted as add-ons.
           </p>
         </div>
+
       </div>
     </div>
   </section>
@@ -274,7 +331,7 @@
     </div>
   </section>
 
-  <!-- PORTFOLIO -->
+  <!-- PORTFOLIO (UPDATED: favicon cover + hover preview) -->
   <section id="portfolio" class="section">
     <div class="container">
       <div class="kicker">Portfolio</div>
@@ -282,9 +339,21 @@
       <p class="sectionLead">A live example of my style: clean layout, mobile-first, and easy-to-contact.</p>
 
       <div class="grid3">
-        <div class="card pad">
-          <h3>The Straight Edge Barbershop</h3>
-          <p class="small">thestraightedge514.com</p>
+        <div class="card pad portfolioCard">
+          <a class="portfolioLink" href="https://thestraightedge514.com" target="_blank" rel="noopener" aria-label="View The Straight Edge Barbershop website">
+            <div class="portfolioMedia">
+              <!-- Cover = favicon -->
+              <img class="portfolioFavicon" src="https://thestraightedge514.com/favicon.png" alt="The Straight Edge Barbershop favicon" />
+
+              <!-- Hover preview (desktop mini). Replace this with an actual screenshot when ready. -->
+              <img class="portfolioPreview" src="images/thestraightedge-preview.png" alt="The Straight Edge Barbershop preview" />
+            </div>
+
+            <div class="portfolioMeta">
+              <h3>The Straight Edge Barbershop</h3>
+              <p class="small">thestraightedge514.com</p>
+            </div>
+          </a>
 
           <ul class="list" style="margin-top:12px;">
             <li>Mobile-first layout with clear call-to-action buttons</li>
@@ -369,9 +438,9 @@
           <input id="name" type="text" placeholder="Your name" required>
           <input id="biz" type="text" placeholder="Business name">
           <select id="need">
-            <option>Website Build + Basic Support ($30/mo)</option>
-            <option>Website Build + Standard Support ($65/mo)</option>
-            <option>Website Build + Full Service Support ($125/mo)</option>
+            <option>Website Build + Basic Support ($45/mo)</option>
+            <option>Website Build + Standard Support ($75/mo)</option>
+            <option>Website Build + Full Service Support ($145/mo)</option>
           </select>
           <textarea id="details" rows="4" placeholder="Anything specific you want on the site? (hours, services, photos, deadline)"></textarea>
           <button class="btn btnPrimary" type="submit">Open email options</button>
@@ -419,6 +488,32 @@
   </div>
 </div>
 
-<script src="assets/js/main.js" defer></script>
+<!-- LOGIN MODAL (NEW) -->
+<div class="modalBack" id="loginBack" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-label="User login">
+    <div class="modalHead">
+      <strong>User login</strong>
+      <button class="xBtn" id="closeLogin" type="button" aria-label="Close">✕</button>
+    </div>
+
+    <div class="modalBody">
+      <p class="small" style="margin-bottom:10px;">
+        This is a simple login gate for showing the dashboard section. We’ll wire it up in <strong>script.js</strong>.
+      </p>
+
+      <form id="loginForm" class="form">
+        <input id="loginEmail" type="email" placeholder="Email" autocomplete="email" required>
+        <input id="loginPass" type="password" placeholder="Password" autocomplete="current-password" required>
+        <button class="btn btnPrimary" type="submit">Sign in</button>
+        <button class="btn btnOutline" type="button" data-action="demo-login">Demo login</button>
+      </form>
+
+      <div class="small" id="loginMsg" aria-live="polite" style="margin-top:10px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- UPDATED: flattened JS path (no assets folder) -->
+<script src="script.js" defer></script>
 </body>
 </html>
