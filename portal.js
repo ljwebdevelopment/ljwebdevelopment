@@ -8,11 +8,24 @@ const firebaseConfig = {
   appId: "1:1027196050099:web:38e50f1be663ec14d62ec6"
 };
 
-// Init Firebase
-firebase.initializeApp(firebaseConfig);
+// Init Firebase safely
+if (!firebase.apps.length) {
+  firebase.initializeApp(firebaseConfig);
+}
 
 const auth = firebase.auth();
-const db = firebase.firestore();
+
+// Only create Firestore if the library is loaded on this page
+const db = (typeof firebase.firestore === "function")
+  ? firebase.firestore()
+  : null;
+
+console.log("Firebase ready:", {
+  auth: !!auth,
+  firestore: !!db
+});
+
+
 
 /* ============================
    LOGIN
