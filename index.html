@@ -11,6 +11,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+  <!-- UPDATED: flattened paths (no assets folder) -->
   <link rel="stylesheet" href="styles.css" />
 </head>
 
@@ -37,7 +38,7 @@
       <button class="navLink" type="button" data-action="scroll" data-target="local">Local</button>
       <button class="btn btnSoft" type="button" data-action="scroll" data-target="contact">Get a Quote</button>
 
-      <!-- UPDATED: login is now a separate page -->
+      <!-- User login (separate page) -->
       <a class="btn btnOutline loginBtn" href="login.html" aria-label="User login">
         User Login
       </a>
@@ -142,7 +143,7 @@
     </div>
   </section>
 
-  <!-- PRICING (STACKED) -->
+  <!-- PRICING -->
   <section id="pricing" class="section">
     <div class="container">
       <div class="kicker">Pricing</div>
@@ -151,7 +152,6 @@
 
       <div class="pricingStack">
 
-        <!-- TOP: Standard build (keep as-is; NOT the highlighted support plan) -->
         <div class="card pad pricingBuild">
           <div class="priceTop">
             <div>
@@ -178,7 +178,6 @@
           <p class="small">After launch, changes and updates are handled through a support plan.</p>
         </div>
 
-        <!-- BOTTOM: Support plans -->
         <div class="card pad pricingPlans">
           <div class="plansHead">
             <div>
@@ -207,10 +206,9 @@
               </div>
             </div>
 
-            <!-- UPDATED: Standard plan is now the highlighted plan -->
+            <!-- FEATURED: Standard -->
             <div class="miniCard featuredPlan">
-              <!-- badge sits in normal flow so it can't cover content -->
-              <div class="planBadge" aria-label="Most Popular">Most Popular</div>
+              <div class="planBadge">Most Popular</div>
 
               <div class="priceTop">
                 <div><strong>Standard</strong><div class="small">Regular promos</div></div>
@@ -300,23 +298,13 @@
       <p class="sectionLead">A live example of my style: clean layout, mobile-first, and easy-to-contact.</p>
 
       <div class="grid3">
+
+        <!-- Straight Edge -->
         <div class="card pad portfolioCard">
           <a class="portfolioLink" href="https://thestraightedge514.com" target="_blank" rel="noopener" aria-label="View The Straight Edge Barbershop website">
             <div class="portfolioMedia">
-              <!-- UPDATED: reliable favicon source -->
-              <img
-                class="portfolioFavicon"
-                src="https://www.google.com/s2/favicons?domain=thestraightedge514.com&sz=128"
-                alt="The Straight Edge Barbershop favicon"
-              />
-
-              <!-- UPDATED: live thumbnail preview source (replace later if you want a local screenshot) -->
-              <img
-                class="portfolioPreview"
-                src="https://image.thum.io/get/width/1200/https://thestraightedge514.com"
-                alt="The Straight Edge Barbershop preview"
-                loading="lazy"
-              />
+              <img class="portfolioFavicon" src="https://thestraightedge514.com/favicon.png" alt="The Straight Edge Barbershop favicon" />
+              <img class="portfolioPreview" src="images/thestraightedge-preview.png" alt="The Straight Edge Barbershop preview" />
             </div>
 
             <div class="portfolioMeta">
@@ -339,10 +327,42 @@
               Build something like this
             </button>
           </div>
-
-          <p class="small" style="margin-top:10px;">More projects coming soon.</p>
         </div>
+
+        <!-- Cole for OK 86 (NEW) -->
+        <div class="card pad portfolioCard">
+          <a class="portfolioLink" href="https://coleforok86.com" target="_blank" rel="noopener" aria-label="View Cole for OK 86 website">
+            <div class="portfolioMedia">
+              <img class="portfolioFavicon" src="https://coleforok86.com/favicon.png" alt="Cole for OK 86 favicon" />
+              <!-- Optional: add a screenshot here later -->
+              <img class="portfolioPreview" src="images/coleforok86-preview.png" alt="Cole for OK 86 preview" />
+            </div>
+
+            <div class="portfolioMeta">
+              <h3>Cole for OK 86</h3>
+              <p class="small">coleforok86.com</p>
+            </div>
+          </a>
+
+          <ul class="list" style="margin-top:12px;">
+            <li>Mobile-first campaign layout with clear donate + volunteer actions</li>
+            <li>Fast-loading sections with clean typography and structured content</li>
+            <li>Contact + engagement flow (forms, updates, and community messaging)</li>
+          </ul>
+
+          <div class="row">
+            <a class="btn btnOutline" href="https://coleforok86.com" target="_blank" rel="noopener">View live site</a>
+            <button class="btn btnSoft" type="button" data-action="email"
+              data-subject="Website Inquiry - Build a Site Like Cole for OK 86"
+              data-message="Hey Luke,%0D%0A%0D%0AI saw your portfolio site (Cole for OK 86) and I want something similar.%0D%0A%0D%0ABusiness name:%0D%0ABest contact:%0D%0AWhat kind of site I need:%0D%0A%0D%0AThanks!">
+              Build something like this
+            </button>
+          </div>
+        </div>
+
       </div>
+
+      <p class="small" style="margin-top:10px;">More projects coming soon.</p>
     </div>
   </section>
 
@@ -390,7 +410,8 @@
           <div class="row">
             <button class="btn btnPrimary" type="button" data-action="email"
               data-subject="Website Inquiry - Luke Johnson"
-              data-message="Hey Luke,%0D%0A%0D%0AI would like to talk to you about building a website with a support plan.%0D%0A%0D%0ABusiness name:%0D%0ABest contact:%0D%0AWhat I need:%0D%0A%0D%0AThanks!">
+              data-message="Hey Luke,%0D%0A%0D%0AI would like to talk to you about building a website with a support plan.%0D%0A%0D%0ABusiness name:%0D%0A
+Best contact:%0D%0AWhat I need:%0D%0A%0D%0AThanks!">
               Open Email
             </button>
             <button class="btn btnOutline" type="button" data-action="scroll" data-target="pricing">Compare plans</button>
