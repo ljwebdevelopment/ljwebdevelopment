@@ -21,9 +21,13 @@ const db = hasFirestore ? firebase.firestore() : null;
    HELPERS
 ============================ */
 function isDashboardPage() {
-  // Works on GitHub Pages and local file paths
   const path = (window.location.pathname || "").toLowerCase();
   return path.includes("dashboard");
+}
+
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = value;
 }
 
 function friendlyAuthError(err) {
@@ -39,6 +43,9 @@ function friendlyAuthError(err) {
   }
   if (code === "auth/network-request-failed") {
     return "Network error. Check your connection and try again.";
+  }
+  if (code === "auth/unauthorized-domain") {
+    return "This domain isn’t authorized in Firebase yet. Add ljwebdevelopment.com in Firebase Auth → Settings → Authorized domains.";
   }
   return err?.message || "Something went wrong. Please try again.";
 }
@@ -63,40 +70,41 @@ function setButtonLoading(btn, loadingText = "Signing in…") {
 const loginForm = document.getElementById("loginForm");
 const loginError = document.getElementById("loginError");
 const rememberMe = document.getElementById("rememberMe");
-const loginButton = loginForm?.querySelector('button[type="submit"]');
+const loginButton = loginForm ? loginForm.querySelector('button[type="submit"]') : null;
 
-loginForm?.addEventListener("submit", async (e) => {
-  e.preventDefault();
+if (loginForm) {
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-  const emailEl = document.getElementById("email");
-  const passEl = document.getElementById("password");
+    const emailEl = document.getElementById("email");
+    const passEl = document.getElementById("password");
 
-  const email = (emailEl?.value || "").trim();
-  const password = passEl?.value || "";
+    const email = (emailEl ? emailEl.value : "").trim();
+    const password = passEl ? passEl.value : "";
 
-  if (loginError) loginError.textContent = "";
+    if (loginError) loginError.textContent = "";
 
-  // Button loading state
-  const stopLoading = setButtonLoading(loginButton);
+    const stopLoading = setButtonLoading(loginButton);
 
-  try {
-    // Remember me behavior:
-    // - checked: LOCAL (stays signed in after closing browser)
-    // - unchecked: SESSION (signs out when browser closes)
-    const persistence = rememberMe?.checked
-      ? firebase.auth.Auth.Persistence.LOCAL
-      : firebase.auth.Auth.Persistence.SESSION;
+    try {
+      // Remember me behavior:
+      // - checked: LOCAL (stays signed in after closing browser)
+      // - unchecked: SESSION (signs out when browser closes)
+      const persistence = (rememberMe && rememberMe.checked)
+        ? firebase.auth.Auth.Persistence.LOCAL
+        : firebase.auth.Auth.Persistence.SESSION;
 
-    await auth.setPersistence(persistence);
-    await auth.signInWithEmailAndPassword(email, password);
+      await auth.setPersistence(persistence);
+      await auth.signInWithEmailAndPassword(email, password);
 
-    window.location.href = "/dashboard.html";
-  } catch (err) {
-    if (loginError) loginError.textContent = friendlyAuthError(err);
-  } finally {
-    stopLoading();
-  }
-});
+      window.location.href = "dashboard.html";
+    } catch (err) {
+      if (loginError) loginError.textContent = friendlyAuthError(err);
+    } finally {
+      stopLoading();
+    }
+  });
+}
 
 /* ============================
    DASHBOARD (protected + data)
@@ -108,15 +116,15 @@ auth.onAuthStateChanged(async (user) => {
     return;
   }
 
-  // If you're on dashboard and Firestore isn't loaded, warn but don't crash
+  // Only run data-population if the dashboard DOM exists
   const planEl = document.getElementById("plan");
   if (user && planEl) {
     if (!db) {
-      // You forgot the Firestore script on dashboard.html
       console.warn("Firestore not loaded. Add firebase-firestore-compat.js to dashboard.html if you want client data.");
-      planEl.textContent = "—";
-      document.getElementById("lastUpdate")?.textContent = "—";
-      document.getElementById("notes")?.textContent = "Firestore not enabled on this page.";
+      setText("plan", "—");
+      setText("lastUpdate", "—");
+      setText("notes", "Firestore not enabled on this page.");
+
       const site = document.getElementById("website");
       if (site) {
         site.textContent = "—";
@@ -127,10 +135,12 @@ auth.onAuthStateChanged(async (user) => {
 
     try {
       const snap = await db.collection("clients").doc(user.uid).get();
+
       if (!snap.exists) {
-        planEl.textContent = "—";
-        document.getElementById("lastUpdate")?.textContent = "—";
-        document.getElementById("notes")?.textContent = "No client record found.";
+        setText("plan", "—");
+        setText("lastUpdate", "—");
+        setText("notes", "No client record found.");
+
         const site = document.getElementById("website");
         if (site) {
           site.textContent = "—";
@@ -140,9 +150,9 @@ auth.onAuthStateChanged(async (user) => {
       }
 
       const data = snap.data() || {};
-      planEl.textContent = data.plan || "—";
-      document.getElementById("lastUpdate")?.textContent = data.lastUpdate || "—";
-      document.getElementById("notes")?.textContent = data.notes || "—";
+      setText("plan", data.plan || "—");
+      setText("lastUpdate", data.lastUpdate || "—");
+      setText("notes", data.notes || "—");
 
       const site = document.getElementById("website");
       if (site) {
@@ -152,8 +162,8 @@ auth.onAuthStateChanged(async (user) => {
       }
     } catch (err) {
       console.error("Dashboard data error:", err);
-      planEl.textContent = "—";
-      document.getElementById("notes")?.textContent = "Could not load dashboard data.";
+      setText("plan", "—");
+      setText("notes", "Could not load dashboard data.");
     }
   }
 });
@@ -161,10 +171,13 @@ auth.onAuthStateChanged(async (user) => {
 /* ============================
    LOGOUT
 ============================ */
-document.getElementById("logout")?.addEventListener("click", async () => {
-  try {
-    await auth.signOut();
-  } finally {
-    window.location.href = "login.html";
-  }
-});
+const logoutBtn = document.getElementById("logout");
+if (logoutBtn) {
+  logoutBtn.addEventListener("click", async () => {
+    try {
+      await auth.signOut();
+    } finally {
+      window.location.href = "login.html";
+    }
+  });
+}
