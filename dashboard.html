@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Client Dashboard | LJ Web Development</title>
+  <meta name="description" content="Client Dashboard for LJ Web Development." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css" />
+
+  <style>
+    .dashShell{
+      padding: 46px 0;
+      background:
+        radial-gradient(circle at 18% 12%, rgba(245,158,11,.16), transparent 45%),
+        linear-gradient(180deg, #fff 0%, #f8fafc 100%);
+      min-height: calc(100vh - 92px);
+    }
+    .dashTop{
+      display:flex;align-items:flex-end;justify-content:space-between;gap:14px;
+      margin-bottom: 18px;
+    }
+    .dashTitle{
+      font-size: clamp(1.6rem, 2.2vw + 1rem, 2.3rem);
+      line-height: 1.1;
+      letter-spacing: -.03em;
+      margin-top: 6px;
+      color: var(--ink);
+    }
+    .dashGrid{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+    .dashWide{
+      margin-top: 14px;
+    }
+    .kv{
+      display:flex;flex-direction:column;gap:6px;
+    }
+    .kv .label{ font-size:.78rem; letter-spacing:.18em; text-transform:uppercase; color:var(--muted); }
+    .kv .value{ font-weight:800; font-size:1.1rem; color:var(--ink); }
+    @media (max-width: 920px){
+      .dashGrid{ grid-template-columns: 1fr; }
+      .dashTop{ flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="head">
+    <a class="brand" href="index.html" aria-label="Back to main site">
+      <div class="logoWrap" title="LJ Web Development">
+        <img src="https://i.ibb.co/pByPkhsT/LJ-Web-Development-Black.png" alt="LJ Web Development logo" />
+      </div>
+      <div class="brandText">
+        <strong>LJ Web Development</strong>
+        <span>Client Dashboard</span>
+      </div>
+    </a>
+
+    <div style="display:flex;gap:10px;align-items:center;">
+      <a class="btn btnOutline loginBtn" href="index.html">Back to site</a>
+      <button class="btn btnSoft loginBtn" type="button" id="logoutBtn">Log out</button>
+    </div>
+  </div>
+</header>
+
+<main class="dashShell">
+  <div class="container">
+    <div class="dashTop">
+      <div>
+        <div class="kicker">Dashboard</div>
+        <h1 class="dashTitle">Your website overview</h1>
+        <p class="small" style="margin-top:10px;" id="welcomeLine">Welcome.</p>
+      </div>
+
+      <div class="card pad" style="min-width:min(360px,100%);">
+        <div class="kv">
+          <div class="label">Support plan</div>
+          <div class="value" id="planLine">—</div>
+        </div>
+        <div class="kv" style="margin-top:12px;">
+          <div class="label">Last update</div>
+          <div class="value" id="updateLine">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dashGrid">
+      <div class="card pad">
+        <h3>Status</h3>
+        <p class="small" id="statusLine" style="margin-top:10px;">—</p>
+      </div>
+
+      <div class="card pad">
+        <h3>Quick actions</h3>
+        <div class="row">
+          <a class="btn btnOutline" href="index.html#contact">Request a change</a>
+          <a class="btn btnOutline" href="mailto:ljwebdevelopmentok@gmail.com?subject=Portal%20Request">Email support</a>
+        </div>
+      </div>
+
+      <div class="card pad">
+        <h3>Notes</h3>
+        <p class="small" id="notesLine" style="margin-top:10px;">
+          We can customize this per-client (domain, plan, maintenance notes, etc.).
+        </p>
+      </div>
+    </div>
+
+    <div class="card pad dashWide">
+      <h3>Website link</h3>
+      <p class="small" style="margin-top:10px;">
+        <a href="#" target="_blank" rel="noopener" id="siteLink">—</a>
+      </p>
+    </div>
+  </div>
+</main>
+
+<script src="portal.js" defer></script>
+</body>
+</html>
