@@ -9,64 +9,151 @@ const firebaseConfig = {
 };
 
 // Init Firebase safely
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
-}
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 
 const auth = firebase.auth();
 
-// Only create Firestore if the library is loaded on this page
-const db = (typeof firebase.firestore === "function")
-  ? firebase.firestore()
-  : null;
+// Firestore is OPTIONAL on login page; required on dashboard page if you show client data
+const hasFirestore = typeof firebase.firestore === "function";
+const db = hasFirestore ? firebase.firestore() : null;
 
-console.log("Firebase ready:", {
-  auth: !!auth,
-  firestore: !!db
-});
+/* ============================
+   HELPERS
+============================ */
+function isDashboardPage() {
+  // Works on GitHub Pages and local file paths
+  const path = (window.location.pathname || "").toLowerCase();
+  return path.includes("dashboard");
+}
 
+function friendlyAuthError(err) {
+  const code = err?.code || "";
+  if (code === "auth/invalid-credential" || code === "auth/wrong-password" || code === "auth/user-not-found") {
+    return "Incorrect email or password.";
+  }
+  if (code === "auth/too-many-requests") {
+    return "Too many attempts. Please wait a minute and try again.";
+  }
+  if (code === "auth/invalid-email") {
+    return "Please enter a valid email address.";
+  }
+  if (code === "auth/network-request-failed") {
+    return "Network error. Check your connection and try again.";
+  }
+  return err?.message || "Something went wrong. Please try again.";
+}
 
+function setButtonLoading(btn, loadingText = "Signing in…") {
+  if (!btn) return () => {};
+  const originalText = btn.textContent;
+  btn.disabled = true;
+  btn.style.opacity = "0.9";
+  btn.textContent = loadingText;
+
+  return () => {
+    btn.disabled = false;
+    btn.style.opacity = "";
+    btn.textContent = originalText;
+  };
+}
 
 /* ============================
    LOGIN
 ============================ */
 const loginForm = document.getElementById("loginForm");
 const loginError = document.getElementById("loginError");
+const rememberMe = document.getElementById("rememberMe");
+const loginButton = loginForm?.querySelector('button[type="submit"]');
 
 loginForm?.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  const emailEl = document.getElementById("email");
+  const passEl = document.getElementById("password");
+
+  const email = (emailEl?.value || "").trim();
+  const password = passEl?.value || "";
+
+  if (loginError) loginError.textContent = "";
+
+  // Button loading state
+  const stopLoading = setButtonLoading(loginButton);
 
   try {
+    // Remember me behavior:
+    // - checked: LOCAL (stays signed in after closing browser)
+    // - unchecked: SESSION (signs out when browser closes)
+    const persistence = rememberMe?.checked
+      ? firebase.auth.Auth.Persistence.LOCAL
+      : firebase.auth.Auth.Persistence.SESSION;
+
+    await auth.setPersistence(persistence);
     await auth.signInWithEmailAndPassword(email, password);
+
     window.location.href = "dashboard.html";
   } catch (err) {
-    loginError.textContent = err.message;
+    if (loginError) loginError.textContent = friendlyAuthError(err);
+  } finally {
+    stopLoading();
   }
 });
 
 /* ============================
-   DASHBOARD (protected)
+   DASHBOARD (protected + data)
 ============================ */
 auth.onAuthStateChanged(async (user) => {
-  if (!user && window.location.pathname.includes("dashboard")) {
+  // If you hit dashboard without a user, go to login
+  if (!user && isDashboardPage()) {
     window.location.href = "login.html";
     return;
   }
 
-  if (user && document.getElementById("plan")) {
-    const doc = await db.collection("clients").doc(user.uid).get();
-    if (doc.exists) {
-      const data = doc.data();
-      document.getElementById("plan").textContent = data.plan || "—";
-      document.getElementById("lastUpdate").textContent = data.lastUpdate || "—";
-      document.getElementById("notes").textContent = data.notes || "—";
+  // If you're on dashboard and Firestore isn't loaded, warn but don't crash
+  const planEl = document.getElementById("plan");
+  if (user && planEl) {
+    if (!db) {
+      // You forgot the Firestore script on dashboard.html
+      console.warn("Firestore not loaded. Add firebase-firestore-compat.js to dashboard.html if you want client data.");
+      planEl.textContent = "—";
+      document.getElementById("lastUpdate")?.textContent = "—";
+      document.getElementById("notes")?.textContent = "Firestore not enabled on this page.";
+      const site = document.getElementById("website");
+      if (site) {
+        site.textContent = "—";
+        site.href = "#";
+      }
+      return;
+    }
+
+    try {
+      const snap = await db.collection("clients").doc(user.uid).get();
+      if (!snap.exists) {
+        planEl.textContent = "—";
+        document.getElementById("lastUpdate")?.textContent = "—";
+        document.getElementById("notes")?.textContent = "No client record found.";
+        const site = document.getElementById("website");
+        if (site) {
+          site.textContent = "—";
+          site.href = "#";
+        }
+        return;
+      }
+
+      const data = snap.data() || {};
+      planEl.textContent = data.plan || "—";
+      document.getElementById("lastUpdate")?.textContent = data.lastUpdate || "—";
+      document.getElementById("notes")?.textContent = data.notes || "—";
 
       const site = document.getElementById("website");
-      site.textContent = data.website || "—";
-      site.href = data.website || "#";
+      if (site) {
+        const url = data.website || "—";
+        site.textContent = url;
+        site.href = data.website || "#";
+      }
+    } catch (err) {
+      console.error("Dashboard data error:", err);
+      planEl.textContent = "—";
+      document.getElementById("notes")?.textContent = "Could not load dashboard data.";
     }
   }
 });
@@ -75,6 +162,9 @@ auth.onAuthStateChanged(async (user) => {
    LOGOUT
 ============================ */
 document.getElementById("logout")?.addEventListener("click", async () => {
-  await auth.signOut();
-  window.location.href = "login.html";
+  try {
+    await auth.signOut();
+  } finally {
+    window.location.href = "login.html";
+  }
 });
