@@ -139,15 +139,26 @@ if (loginForm) {
     const stopLoading = setButtonLoading(loginButton, "Signing in…");
 
     try {
-  await fetch(SUPPORT_ENDPOINT_URL, {
-    method: "POST",
-    mode: "no-cors",
-    headers: { "Content-Type": "text/plain;charset=utf-8" },
-    body: JSON.stringify(payload)
-  });
+  const postForm = document.getElementById("sheetPostForm");
+  if (!postForm) throw new Error("Missing #sheetPostForm in dashboard.html");
 
-  // With no-cors, the browser won’t let us read the response.
-  // If the request is dispatched, we treat it as success.
+  // Fill hidden form inputs (these must exist in dashboard.html)
+  postForm.uid.value = context.uid || "";
+  postForm.email.value = context.email || "";
+  postForm.businessName.value = context.businessName || "";
+  postForm.website.value = context.website || "";
+  postForm.plan.value = context.plan || "";
+
+  postForm.category.value = category;
+  postForm.priority.value = priority;
+  postForm.impact.value = impactVal;
+  postForm.pageUrl.value = pageUrl;
+  postForm.message.value = message;
+
+  // Submit to Apps Script (no CORS issues)
+  postForm.submit();
+
+  // Success UI
   form.reset();
   if (impactNum) impactNum.textContent = "5";
   if (toast) toast.style.display = "block";
@@ -157,6 +168,7 @@ if (loginForm) {
 } finally {
   stopLoading();
 }
+
 
   });
 }
