@@ -90,7 +90,7 @@ loginForm?.addEventListener("submit", async (e) => {
     await auth.setPersistence(persistence);
     await auth.signInWithEmailAndPassword(email, password);
 
-    window.location.href = "dashboard.html";
+    window.location.href = "/dashboard.html";
   } catch (err) {
     if (loginError) loginError.textContent = friendlyAuthError(err);
   } finally {
