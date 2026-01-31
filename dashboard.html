@@ -18,6 +18,44 @@
 <body class="softTop">
   <main class="section">
     <div class="container">
+
+      <!-- PROFILE HEADER -->
+      <div class="dashTop">
+        <div class="profileCard card pad">
+          <div class="profileRow">
+            <div class="avatar" aria-hidden="true">
+              <img id="clientAvatar" src="" alt="" />
+            </div>
+
+            <div class="profileInfo">
+              <div class="kicker">Client Portal</div>
+              <h2 class="hello">Hello, <span id="helloName">—</span></h2>
+
+              <div class="metaLine">
+                <span class="metaItem"><strong>Plan:</strong> <span id="planMeta">—</span></span>
+                <span class="metaSep">•</span>
+                <span class="metaItem"><strong>Website:</strong> <a id="websiteMeta" href="#" target="_blank" rel="noopener">—</a></span>
+                <span class="metaSep">•</span>
+                <span class="metaItem"><strong>Email:</strong> <span id="emailMeta">—</span></span>
+              </div>
+
+              <div class="chipRow" style="margin-top:12px;">
+                <span class="pillChip ok"><span class="pillDot"></span> Active</span>
+                <span class="pillChip soft"><span class="pillDot"></span> Support Requests</span>
+              </div>
+            </div>
+
+            <div class="profileActions">
+              <a class="btn btnOutline" href="#support">Have a question?</a>
+              <button class="btn btnOutline" id="logoutTop">Log out</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="spacer"></div>
+
+      <!-- OVERVIEW -->
       <div class="kicker">Dashboard</div>
       <h2>Your Website</h2>
 
@@ -43,9 +81,82 @@
         <p class="small" id="notes">—</p>
       </div>
 
+      <!-- SUPPORT FORM -->
+      <div id="support" class="card pad" style="margin-top:18px;">
+        <div class="supportHead">
+          <div>
+            <h3>Have a question?</h3>
+            <p class="small">Send a request to LJ Web Development. We’ll respond as soon as possible.</p>
+          </div>
+          <span class="chip"><span class="dot"></span> Requests go to our support sheet</span>
+        </div>
+
+        <form id="supportForm" class="form supportForm" autocomplete="off">
+          <div class="formGrid2">
+            <div>
+              <label class="fieldLabel" for="reqCategory">Category</label>
+              <select id="reqCategory" required>
+                <option value="" disabled selected>Select a category…</option>
+                <option value="Website Change">Website Change</option>
+                <option value="Bug / Issue">Bug / Issue</option>
+                <option value="Content Update">Content Update</option>
+                <option value="Billing">Billing</option>
+                <option value="New Feature">New Feature</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="fieldLabel">Priority</label>
+              <div class="priorityRow" role="radiogroup" aria-label="Priority">
+                <label class="prio prioLow">
+                  <input type="radio" name="priority" value="Low" required />
+                  Low
+                </label>
+                <label class="prio prioNormal">
+                  <input type="radio" name="priority" value="Normal" />
+                  Normal
+                </label>
+                <label class="prio prioUrgent">
+                  <input type="radio" name="priority" value="Urgent" />
+                  Urgent
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="formGrid2">
+            <div>
+              <label class="fieldLabel" for="reqUrl">Page URL (optional)</label>
+              <input id="reqUrl" type="url" placeholder="https://yourwebsite.com/page" />
+            </div>
+
+            <div>
+              <label class="fieldLabel" for="impact">Impact <span class="impactNum" id="impactNum">5</span>/10</label>
+              <input id="impact" type="range" min="1" max="10" value="5" />
+              <p class="small" style="margin-top:6px;">How much is this affecting you?</p>
+            </div>
+          </div>
+
+          <div>
+            <label class="fieldLabel" for="reqMessage">Message</label>
+            <textarea id="reqMessage" rows="5" placeholder="Tell us what you need changed or what’s happening…" required></textarea>
+          </div>
+
+          <div class="row" style="margin-top:14px;">
+            <button class="btn btnPrimary" id="submitReq" type="submit">Send request</button>
+            <span class="small" id="supportHint">We include your account + website automatically.</span>
+          </div>
+
+          <div class="toast" id="supportToast">✅ Request sent. We’ll get back to you soon.</div>
+          <div class="formError" id="supportError"></div>
+        </form>
+      </div>
+
       <div class="row" style="margin-top:18px;">
         <button class="btn btnOutline" id="logout">Log out</button>
       </div>
+
     </div>
   </main>
 
