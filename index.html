@@ -11,7 +11,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- UPDATED: flattened paths (no assets folder) -->
   <link rel="stylesheet" href="styles.css" />
 </head>
 
@@ -38,10 +37,10 @@
       <button class="navLink" type="button" data-action="scroll" data-target="local">Local</button>
       <button class="btn btnSoft" type="button" data-action="scroll" data-target="contact">Get a Quote</button>
 
-      <!-- NEW: user login button (top-right area in header/nav) -->
-      <button class="btn btnOutline loginBtn" type="button" data-action="open-login" aria-label="User login">
+      <!-- UPDATED: login is now a separate page -->
+      <a class="btn btnOutline loginBtn" href="login.html" aria-label="User login">
         User Login
-      </button>
+      </a>
     </nav>
   </div>
 </header>
@@ -109,44 +108,6 @@
     </div>
   </section>
 
-  <!-- DASHBOARD (NEW) -->
-  <section id="dashboard" class="section dashboard" hidden>
-    <div class="container">
-      <div class="kicker">Dashboard</div>
-      <h2>Your website overview</h2>
-      <p class="sectionLead">
-        This is a simple overview area. After login, we’ll show plan, last update, and quick actions.
-      </p>
-
-      <div class="grid3">
-        <div class="card pad">
-          <h3>Plan</h3>
-          <p class="small"><span id="dashPlan">—</span></p>
-        </div>
-
-        <div class="card pad">
-          <h3>Last update</h3>
-          <p class="small"><span id="dashLastUpdate">—</span></p>
-        </div>
-
-        <div class="card pad">
-          <h3>Quick actions</h3>
-          <div class="row">
-            <button class="btn btnOutline" type="button" data-action="scroll" data-target="contact">Request change</button>
-            <button class="btn btnSoft" type="button" data-action="logout">Log out</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="card pad" style="margin-top:14px;">
-        <h3>Notes</h3>
-        <p class="small" id="dashNotes">
-          After we build script.js, this can be personalized per client (support plan, notes, links).
-        </p>
-      </div>
-    </div>
-  </section>
-
   <!-- SERVICES -->
   <section id="services" class="section softBand">
     <div class="container">
@@ -181,20 +142,17 @@
     </div>
   </section>
 
-  <!-- PRICING (UPDATED: STACKED) -->
+  <!-- PRICING (STACKED) -->
   <section id="pricing" class="section">
     <div class="container">
       <div class="kicker">Pricing</div>
       <h2>Clear pricing</h2>
       <p class="sectionLead">One-time build + a support plan so updates stay handled.</p>
 
-      <!-- UPDATED: stacked layout wrapper -->
       <div class="pricingStack">
 
-        <!-- TOP: Standard build (popular) -->
-        <div class="card pad pricingBuild popularCard">
-          <div class="cornerTag" aria-label="Popular">Popular</div>
-
+        <!-- TOP: Standard build (keep as-is; NOT the highlighted support plan) -->
+        <div class="card pad pricingBuild">
           <div class="priceTop">
             <div>
               <h3>Standard Website Build</h3>
@@ -229,7 +187,6 @@
             </div>
           </div>
 
-          <!-- UPDATED: plans grid -->
           <div class="plansGrid">
             <div class="miniCard">
               <div class="priceTop">
@@ -250,7 +207,11 @@
               </div>
             </div>
 
-            <div class="miniCard">
+            <!-- UPDATED: Standard plan is now the highlighted plan -->
+            <div class="miniCard featuredPlan">
+              <!-- badge sits in normal flow so it can't cover content -->
+              <div class="planBadge" aria-label="Most Popular">Most Popular</div>
+
               <div class="priceTop">
                 <div><strong>Standard</strong><div class="small">Regular promos</div></div>
                 <div class="price">$75 <small>/mo</small></div>
@@ -331,7 +292,7 @@
     </div>
   </section>
 
-  <!-- PORTFOLIO (UPDATED: favicon cover + hover preview) -->
+  <!-- PORTFOLIO -->
   <section id="portfolio" class="section">
     <div class="container">
       <div class="kicker">Portfolio</div>
@@ -342,11 +303,20 @@
         <div class="card pad portfolioCard">
           <a class="portfolioLink" href="https://thestraightedge514.com" target="_blank" rel="noopener" aria-label="View The Straight Edge Barbershop website">
             <div class="portfolioMedia">
-              <!-- Cover = favicon -->
-              <img class="portfolioFavicon" src="https://thestraightedge514.com/favicon.png" alt="The Straight Edge Barbershop favicon" />
+              <!-- UPDATED: reliable favicon source -->
+              <img
+                class="portfolioFavicon"
+                src="https://www.google.com/s2/favicons?domain=thestraightedge514.com&sz=128"
+                alt="The Straight Edge Barbershop favicon"
+              />
 
-              <!-- Hover preview (desktop mini). Replace this with an actual screenshot when ready. -->
-              <img class="portfolioPreview" src="images/thestraightedge-preview.png" alt="The Straight Edge Barbershop preview" />
+              <!-- UPDATED: live thumbnail preview source (replace later if you want a local screenshot) -->
+              <img
+                class="portfolioPreview"
+                src="https://image.thum.io/get/width/1200/https://thestraightedge514.com"
+                alt="The Straight Edge Barbershop preview"
+                loading="lazy"
+              />
             </div>
 
             <div class="portfolioMeta">
@@ -488,32 +458,6 @@
   </div>
 </div>
 
-<!-- LOGIN MODAL (NEW) -->
-<div class="modalBack" id="loginBack" aria-hidden="true">
-  <div class="modal" role="dialog" aria-modal="true" aria-label="User login">
-    <div class="modalHead">
-      <strong>User login</strong>
-      <button class="xBtn" id="closeLogin" type="button" aria-label="Close">✕</button>
-    </div>
-
-    <div class="modalBody">
-      <p class="small" style="margin-bottom:10px;">
-        This is a simple login gate for showing the dashboard section. We’ll wire it up in <strong>script.js</strong>.
-      </p>
-
-      <form id="loginForm" class="form">
-        <input id="loginEmail" type="email" placeholder="Email" autocomplete="email" required>
-        <input id="loginPass" type="password" placeholder="Password" autocomplete="current-password" required>
-        <button class="btn btnPrimary" type="submit">Sign in</button>
-        <button class="btn btnOutline" type="button" data-action="demo-login">Demo login</button>
-      </form>
-
-      <div class="small" id="loginMsg" aria-live="polite" style="margin-top:10px;"></div>
-    </div>
-  </div>
-</div>
-
-<!-- UPDATED: flattened JS path (no assets folder) -->
 <script src="script.js" defer></script>
 </body>
 </html>
