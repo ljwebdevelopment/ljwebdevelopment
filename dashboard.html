@@ -161,6 +161,26 @@
   </main>
 
   <!-- Your app logic LAST -->
+  <!-- Hidden sink for Google Sheets POST (avoids CORS) -->
+<iframe name="sheetSink" style="display:none;"></iframe>
+
+<form id="sheetPostForm"
+      action="https://script.google.com/macros/s/AKfycbx5FpCO8UIzHZ86BQ5CH20tjPL3zMHq5kEHJM8Kwv2AKhTTW-J8tA8kzlsXTgrGzyHB2Q/exec"
+      method="POST"
+      target="sheetSink"
+      style="display:none;">
+  <input name="uid" />
+  <input name="email" />
+  <input name="businessName" />
+  <input name="website" />
+  <input name="plan" />
+  <input name="category" />
+  <input name="priority" />
+  <input name="impact" />
+  <input name="pageUrl" />
+  <input name="message" />
+</form>
+
   <script src="portal.js"></script>
 </body>
 </html>
