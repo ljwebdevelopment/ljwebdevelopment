@@ -33,7 +33,8 @@ If you want call tracking, add a clickable phone link and we’ll tag it.
 2. Create a free account.
 3. Add a **monitor** for your website.
 4. Go to **My Settings → API Settings** and copy your **API Key**.
-5. Copy the **monitor ID** for your site.
+5. Use the **Main API Key** (not the monitor-specific key).
+6. Copy the **monitor ID** for your site.
 
 ---
 
