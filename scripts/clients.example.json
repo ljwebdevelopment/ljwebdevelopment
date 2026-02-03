@@ -1,7 +1,6 @@
 [
   {
     "docId": "CLIENT_DOCUMENT_ID",
-    "websiteUrl": "https://example.com",
     "hostname": "example.com",
     "uptimeMonitorId": "123456789"
   }

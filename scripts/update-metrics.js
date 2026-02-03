@@ -8,15 +8,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const GA4_PROPERTY_ID = process.env.GA4_PROPERTY_ID;
-const PAGESPEED_API_KEY = process.env.PAGESPEED_API_KEY;
 const UPTIMEROBOT_API_KEY = process.env.UPTIMEROBOT_API_KEY;
 const FIREBASE_SERVICE_ACCOUNT = process.env.FIREBASE_SERVICE_ACCOUNT;
 
 if (!GA4_PROPERTY_ID) {
   throw new Error("Missing GA4_PROPERTY_ID in environment.");
-}
-if (!PAGESPEED_API_KEY) {
-  throw new Error("Missing PAGESPEED_API_KEY in environment.");
 }
 if (!FIREBASE_SERVICE_ACCOUNT) {
   throw new Error("Missing FIREBASE_SERVICE_ACCOUNT in environment.");
@@ -127,27 +123,6 @@ async function fetchEventCount(eventName, hostname) {
   return Number(value || 0);
 }
 
-async function fetchPageSpeed(url) {
-  const response = await fetch(
-    `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(
-      url
-    )}&strategy=mobile&key=${PAGESPEED_API_KEY}`
-  );
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(`PageSpeed request failed: ${response.status} ${text}`);
-  }
-  const data = await response.json();
-  const performanceScore = Number(data?.lighthouseResult?.categories?.performance?.score || 0);
-  const speedIndexMs = Number(
-    data?.lighthouseResult?.audits?.["speed-index"]?.numericValue || 0
-  );
-  return {
-    performanceScore,
-    speedIndexMs
-  };
-}
-
 async function fetchUptimeRatio(monitorId) {
   if (!UPTIMEROBOT_API_KEY || !monitorId) return null;
   const response = await fetch("https://api.uptimerobot.com/v2/getMonitors", {
@@ -181,12 +156,14 @@ function formatSpeed(ms) {
 }
 
 function statusFromScore(score) {
+  if (score == null) return { label: "Pending", tone: "warn" };
   if (score >= 95) return { label: "Excellent", tone: "good" };
   if (score >= 85) return { label: "Great", tone: "good" };
   return { label: "Needs work", tone: "warn" };
 }
 
 function statusFromSpeed(seconds) {
+  if (seconds == null) return { label: "Pending", tone: "warn" };
   if (seconds <= 2) return { label: "Fast", tone: "good" };
   if (seconds <= 3) return { label: "Good", tone: "warn" };
   return { label: "Slow", tone: "warn" };
@@ -199,36 +176,32 @@ function statusFromUptime(ratio) {
 }
 
 function buildMetrics({
-  performanceScore,
-  speedIndexMs,
   uptimeRatio,
   totalUsers,
   contactActions,
   directionClicks,
   formSubmissions
 }) {
-  const speedSeconds = speedIndexMs ? speedIndexMs / 1000 : 0;
+  const speedSeconds = null;
   const uptimeValue = uptimeRatio ? `${uptimeRatio.toFixed(2)}%` : "—";
-  const healthScore = Math.round(
-    performanceScore * 100 * 0.6 + (uptimeRatio || 0) * 0.4
-  );
+  const healthScore = uptimeRatio ? Math.round(uptimeRatio) : null;
 
   const healthStatus = statusFromScore(healthScore);
-  const vitalsStatus = statusFromScore(Math.round(performanceScore * 100));
+  const vitalsStatus = statusFromScore(null);
   const speedStatus = statusFromSpeed(speedSeconds);
   const uptimeStatus = uptimeRatio ? statusFromUptime(uptimeRatio) : { label: "Pending", tone: "warn" };
 
   return {
-    healthScore: `${healthScore}%`,
+    healthScore: healthScore != null ? `${healthScore}%` : "—",
     healthStatus: healthStatus.label,
     healthTone: healthStatus.tone,
-    vitalsScore: Math.round(performanceScore * 100),
+    vitalsScore: "—",
     vitalsStatus: vitalsStatus.label,
     vitalsTone: vitalsStatus.tone,
     uptimeValue,
     uptimeStatus: uptimeStatus.label,
     uptimeTone: uptimeStatus.tone,
-    speedValue: formatSpeed(speedIndexMs),
+    speedValue: "—",
     speedStatus: speedStatus.label,
     speedTone: speedStatus.tone,
     trafficValue: formatNumber(totalUsers),
@@ -250,9 +223,9 @@ function buildMetrics({
 }
 
 for (const client of clients) {
-  const { docId, websiteUrl, hostname, uptimeMonitorId } = client;
-  if (!docId || !websiteUrl) {
-    throw new Error("Each client needs docId and websiteUrl.");
+  const { docId, hostname, uptimeMonitorId } = client;
+  if (!docId) {
+    throw new Error("Each client needs docId.");
   }
 
   const totalUsers = await fetchTotalUsers(hostname);
@@ -262,12 +235,9 @@ for (const client of clients) {
   const formSubmissions = await fetchEventCount("form_submit", hostname);
   const contactActions = contactCalls + contactEmails;
 
-  const speed = await fetchPageSpeed(websiteUrl);
   const uptimeRatio = await fetchUptimeRatio(uptimeMonitorId);
 
   const metrics = buildMetrics({
-    performanceScore: speed.performanceScore,
-    speedIndexMs: speed.speedIndexMs,
     uptimeRatio,
     totalUsers,
     contactActions,
