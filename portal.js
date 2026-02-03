@@ -238,6 +238,7 @@ async function loadClientData(user) {
     if (metrics.formSubmissions) setText("formSubmissions", metrics.formSubmissions);
     if (metrics.checklistStatus) setStatusPill("checklistStatus", metrics.checklistStatus, metrics.checklistTone);
     if (metrics.nextAudit) setText("nextAudit", metrics.nextAudit);
+    if (metrics.lastSync) setText("lastSync", metrics.lastSync);
   }
 }
 
